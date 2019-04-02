@@ -215,7 +215,13 @@ void ts_map_update(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos, int quali
   }
 }
 
-#define SWAP(x, y) ( x ^= y ^= x ^= y )
+#define SWAP(x, y) \
+{\
+	int temp = x;\
+	x = y;\
+	y = temp;\
+}
+
 void ts_map_laser_ray(ts_map_t *map, int x1, int y1, int x2, int y2, int xp, int yp, int value, int alpha) {
   int x2c, y2c, dx, dy, dxc, dyc, error, errorv, derrorv, x;
   int incv, sincv, incerrorv, incptrx, incptry, pixval, horiz, diago;
