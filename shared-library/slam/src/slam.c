@@ -109,14 +109,14 @@ ts_position_t vuw_slam_optimise(ts_scan_t *scan, ts_map_t *map, ts_position_t p,
   int x, y, t;
   ts_position_t np;
   ts_position_t best_np = p;
-  int best_np_score = 2000000000; // TODO p_score;
+  int best_np_score = p_score; //2000000000; // TODO p_score;
   int best_is_inside = 1;
   for(x = 0; x <= VUW_SEARCH_DIVISIONS; x++) {
-    np.x = p.x + (((float)x)/VUW_SEARCH_DIVISIONS - 0.5) * s.x;
+    np.x = p.x + (((float)x)/VUW_SEARCH_DIVISIONS - 0.5f) * s.x;
     for(y = 0; y <= VUW_SEARCH_DIVISIONS; y++) {
-      np.y = p.y + (((float)y)/VUW_SEARCH_DIVISIONS - 0.5) * s.y;
+      np.y = p.y + (((float)y)/VUW_SEARCH_DIVISIONS - 0.5f) * s.y;
       for(t = 0; t <= VUW_SEARCH_DIVISIONS; t++) {
-        np.theta = p.theta + (((float)t)/VUW_SEARCH_DIVISIONS - 0.5) * s.theta;
+        np.theta = p.theta + (((float)t)/VUW_SEARCH_DIVISIONS - 0.5f) * s.theta;
         int score = ts_distance_scan_to_map(scan, map, &np);
         if(score < best_np_score) {
           best_np_score = score;
@@ -158,8 +158,8 @@ int ts_distance_scan_to_map(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos) 
   // and compute the distance
   for (i = 0, sum = 0; i != scan->nb_points; i++) {
     if (scan->value[i] != TS_NO_OBSTACLE) {
-      x = (int) floor((pos->x + c * scan->x[i] - s * scan->y[i]) * TS_MAP_SCALE + 0.5);
-      y = (int) floor((pos->y + s * scan->x[i] + c * scan->y[i]) * TS_MAP_SCALE + 0.5);
+      x = (int) floor((pos->x + c * scan->x[i] - s * scan->y[i]) * TS_MAP_SCALE + 0.5f);
+      y = (int) floor((pos->y + s * scan->x[i] + c * scan->y[i]) * TS_MAP_SCALE + 0.5f);
       // Check boundaries
       if (x >= 0 && x < TS_MAP_SIZE && y >= 0 && y < TS_MAP_SIZE) {
         sum += map->map[y * TS_MAP_SIZE + x];
@@ -190,20 +190,20 @@ void ts_map_update(ts_scan_t *scan, ts_map_t *map, ts_position_t *pos, int quali
   float add, dist;
   c = cos(pos->theta);
   s = sin(pos->theta);
-  x1 = (int) floor(pos->x * TS_MAP_SCALE + 0.5);
-  y1 = (int) floor(pos->y * TS_MAP_SCALE + 0.5);
+  x1 = (int) floor(pos->x * TS_MAP_SCALE + 0.5f);
+  y1 = (int) floor(pos->y * TS_MAP_SCALE + 0.5f);
   // Translate and rotate scan to robot position
   for (i = 0; i != scan->nb_points; i++) {
     x2p = c * scan->x[i] - s * scan->y[i];
     y2p = s * scan->x[i] + c * scan->y[i];
-    xp = (int) floor((pos->x + x2p) * TS_MAP_SCALE + 0.5);
-    yp = (int) floor((pos->y + y2p) * TS_MAP_SCALE + 0.5);
+    xp = (int) floor((pos->x + x2p) * TS_MAP_SCALE + 0.5f);
+    yp = (int) floor((pos->y + y2p) * TS_MAP_SCALE + 0.5f);
     dist = sqrt(x2p * x2p + y2p * y2p);
     add = TS_HOLE_WIDTH / 2 / dist;
     x2p *= TS_MAP_SCALE * (1 + add);
     y2p *= TS_MAP_SCALE * (1 + add);
-    x2 = (int) floor(pos->x * TS_MAP_SCALE + x2p + 0.5);
-    y2 = (int) floor(pos->y * TS_MAP_SCALE + y2p + 0.5);
+    x2 = (int) floor(pos->x * TS_MAP_SCALE + x2p + 0.5f);
+    y2 = (int) floor(pos->y * TS_MAP_SCALE + y2p + 0.5f);
     if (scan->value[i] == TS_NO_OBSTACLE) {
       q = quality / 2;
       value = TS_NO_OBSTACLE;
